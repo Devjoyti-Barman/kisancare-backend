@@ -6,9 +6,10 @@ import cors from 'cors';
 import './helpers/passport-google.js';
 
 import connectDB from './connection/db.js';
+import passport from 'passport';
 import isLogin from './middlewares/isLogin.js';
 import googleAuth from './routes/authentication.js';
-import passport from 'passport';
+import blogRoute from './routes/blog.js'
 
 dotenv.config();
 
@@ -26,12 +27,14 @@ app.use(passport.session());
 
 app.use(express.json());
 
+app.use('/blog',blogRoute);
+app.use('/auth',googleAuth);
+
 app.use("/home",isLogin,(req,res)=>{
   console.log(req.user);
   res.send(`welcome ${req.user}`)} );
-app.use('/auth',googleAuth);
+  
 app.use("/",(req,res)=>res.send("<a href=auth/google>Sign in </a> "));
-
 
 
 connectDB();

@@ -29,7 +29,8 @@ const userSchema= mongoose.Schema(
             default:false,
         },
         adminThrough:{
-            type: mongoose.Types.ObjectId
+            type: mongoose.Types.ObjectId,
+            ref:'user'
         }
     },
     {timestamps:true}

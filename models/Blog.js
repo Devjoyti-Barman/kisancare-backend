@@ -5,20 +5,30 @@ const Schema= mongoose.Schema;
 const BlogSchema= mongoose.Schema(
     {
         title:{
-            String,
+            type:String,
             minLength: 6,
             maxLength:50,
-            required
+            required:true
+        },
+        frontImage:{
+          type:String,
+          minLength:8,
+          required:true
         },
         author:{
-            String,
+            type:String,
             minLength:6,
-            maxLength:30
+            maxLength:30,
+            required:true
+        },
+        createdBy:{
+            type:String,
+            required:true
         },
         body:{
-            String,
+            type:String,
             minLength:6,
-            required
+            required:true
         },
 
 
@@ -29,4 +39,4 @@ const BlogSchema= mongoose.Schema(
 
 const Blog=mongoose.model('blog',BlogSchema);
 
-export default BlogSchema;
+export default Blog;
