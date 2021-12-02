@@ -4,7 +4,7 @@ import isLogin from '../middlewares/isLogin.js';
 
 const router=express.Router();
 
-router.put('/create',isLogin, createBlog);
+router.post('/create', isLogin, createBlog);
 
 
 export default router;

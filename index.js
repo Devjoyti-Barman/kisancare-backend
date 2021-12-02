@@ -16,8 +16,8 @@ dotenv.config();
 const app= express();
 app.use(
   cors({
-    origin: "http://localhost:3001",
-    methods: "GET,POST,PUT,DELETE",
+    origin: 'http://localhost:3001',
+    methods: ['GET','POST','PUT','DELETE'],
     credentials: true,
   })
 );
@@ -37,8 +37,8 @@ app.use('/blog',blogRoute);
 app.use('/auth',googleAuth);
 
 app.use("/home",isLogin,(req,res)=>{
-  console.log(req.user);
-  res.send(`welcome ${req.user}`)} );
+  res.send(`welcome ${req.user.username}`)} 
+);
   
 app.use("/",(req,res)=>res.send("<a href=auth/google>Sign in </a> "));
 
