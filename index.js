@@ -2,11 +2,11 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieSession from 'cookie-session';
 import cors from 'cors';
+import passport from 'passport';
 
 import './helpers/passport-google.js';
 
 import connectDB from './connection/db.js';
-import passport from 'passport';
 import isLogin from './middlewares/isLogin.js';
 import googleAuth from './routes/authentication.js';
 import blogRoute from './routes/blog.js'
@@ -14,7 +14,13 @@ import blogRoute from './routes/blog.js'
 dotenv.config();
 
 const app= express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 app.use(cookieSession({
     maxAge: 24*60*60*1000,
     keys:[process.env.cookie_key_secret_1,process.env.cookie_key_secret_2]
