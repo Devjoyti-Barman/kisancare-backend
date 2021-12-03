@@ -4,7 +4,7 @@ import cookieSession from 'cookie-session';
 import cors from 'cors';
 import passport from 'passport';
 
-import './helpers/passport-google.js';
+import './helpers/passport.js';
 
 import connectDB from './connection/db.js';
 import isLogin from './middlewares/isLogin.js';
