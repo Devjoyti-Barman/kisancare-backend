@@ -25,8 +25,8 @@ router.get('/success',isLogin, (req,res)=>{
     
 });
 
-router.get('/logout', isLogin,(req,res)=>{
-    req.logOut();
+router.get('/logout',(req,res)=>{
+    req.logout();
     res.redirect(CLIENT_URL);
 })
 
