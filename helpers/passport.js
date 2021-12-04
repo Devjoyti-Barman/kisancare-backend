@@ -76,7 +76,7 @@ passport.use(
       callbackURL: 'http://localhost:3000/auth/github/callback'
     },
     function (accessToken, refreshToken, profile, done) {
-      console.log(profile);
+      //console.log(profile);
       done(null, profile);
     }
   )

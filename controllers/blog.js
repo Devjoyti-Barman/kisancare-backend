@@ -29,7 +29,33 @@ async function createBlog(req,res,next){
    
 }
 
+async function showBlog(req,res,next){
+
+    try {
+        const {blogID} = req.params;
+        const currentBlog= await Blog.findById(blogID);
+        
+        if(currentBlog) {
+            res.status(200).json({
+                data:currentBlog
+            });
+        }else{
+            res.status(404).json({
+                message:'The Blog does not exist'
+            });
+        }
+
+    
+    } catch (error) {
+        res.status(404).json({
+           message:'Something went Wrong',
+           error:error
+        });
+    }
+}
+
 
 export{
-    createBlog
+    createBlog,
+    showBlog
 }
