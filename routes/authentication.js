@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import isLogin from '../middlewares/isLogin.js';
-import { CreateUser, ValidateEmail } from '../controllers/authentication.js';
+import { SignIn, SignUp, ValidateEmail } from '../controllers/authentication.js';
 
 const router=express.Router();
 
@@ -53,10 +53,10 @@ router.get( '/github/callback', passport.authenticate('github',{
 
 // local auth.  Creating new user locally
 
-router.post('/create-user',CreateUser);
+router.post('/create-user',SignUp);
 
 // auth with Local
-router.post('/local', passport.authenticate('local',{
+router.post('/local', SignIn, passport.authenticate('local',{
     successRedirect:CLIENT_URL,
     failureRedirect:'/failed'
 }));

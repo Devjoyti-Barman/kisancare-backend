@@ -26,13 +26,72 @@ const Validate_Credentials_of_signup=(username,email,password,confirm_password)=
     else if( email===undefined ) throw 'email is undefined';
     else if( EmailValidator.validate(email) ===false ) throw 'email is not valid';
     else if( password===undefined ) throw 'password is undefined';
+    else if( password.length <6 ) throw 'password length must be greate than 5';
     else if( confirm_password===undefined ) throw 'confirm-password is undefined';
     else if( password != confirm_password) throw 'password and confirm-password is not same';
     
 }
 
 
-const CreateUser=async(req,res)=>{
+const Validate_Credentials_of_signin=(email,password)=>{
+
+    if( email===undefined ) throw 'email is undefined';
+    else if( EmailValidator.validate(email) ===false ) throw 'email is not valid';
+    else if( password===undefined ) throw 'password is undefined';
+    else if( password.length <6 ) throw 'password length must be greate than 5';
+}
+
+const sendEmail_To_Validate_Email=async (user)=>{
+    
+    return new Promise( async(resolve,reject) =>{
+           
+        try {
+
+            // if the user is already verified
+            if( user.verified===true ) return reject({status:400,error:'The user is already verified'});
+
+            const newUserToken=new Token({
+                userID:user._id
+            });
+              
+            await newUserToken.save();
+        
+            const email_validate_url=`http://localhost:3001/confirmation/${newUserToken._id}`;
+        
+            const mailOptions={
+                from:'Kisan Care',
+                to:user.email,
+                subject:'Confirm Email',
+                text:`click to this to verify your email ${email_validate_url}`,
+                html:`Please click this email to confirm your email: <a href=${email_validate_url}>${email_validate_url}</a>`
+            }
+    
+               
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                   
+                   reject({status:503,error:error});
+                   
+                } else {
+                    resolve(true);
+                }
+        
+            });
+
+        } catch (error) {
+
+            reject({error,status:400});
+        }
+          
+          
+    })
+
+
+
+ 
+}
+
+const SignUp=async(req,res)=>{
     
     const {username,email,password,confirm_password} = req.body;    
      
@@ -64,36 +123,15 @@ const CreateUser=async(req,res)=>{
                 password:hashPassword
             });
 
-            const newUserToken=new Token({
-                userID:newUser._id
-            });
-
             await newUser.save();
-            await newUserToken.save();
 
+            await sendEmail_To_Validate_Email(newUser);
             
-           const email_validate_url=`http://localhost:3001/confirmation/${newUserToken._id}`;
-
-            const mailOptions={
-                from:'Kisan Care',
-                to:email,
-                subject:'Confirm Email',
-                text:`click to this to verify your email ${email_validate_url}`,
-                html:`Please click this email to confirm your email: <a href=${email_validate_url}>${email_validate_url}</a>`
-            }
-
+            res.status(202).json({message:'user created successfully.\n Check email for email validation.'});
             
-            transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                  console.log(error);
-                } else {
-                    return res.status(201).json({
-                        message:'user created successfully.\n Check email for email validation'
-                    });
-                }
-            }); 
-              
         }
+
+
     } catch (error) {
         console.log(error);
         return res.status(400).json({
@@ -139,8 +177,38 @@ const ValidateEmail=async(req,res)=>{
     }
 }
 
+const SignIn=async(req,res,next)=>{
+    
+    const {email,password}=req.body;
+    
+    try {
+
+        Validate_Credentials_of_signin(email,password);
+
+        currrent_user= await User.findOne({email});
+
+        if( currrent_user ){
+              
+            if( currrent_user.verified ===true ) next();
+            else{
+               
+               await sendEmail_To_Validate_Email(currrent_user);
+               res.status(202).json({message:'email is not verified.\n Check your email to verify the user.'});
+            }
+        }
+        
+        else
+           throw 'user does not exist';
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({message:error});
+    }
+
+}
 
 export {
-    CreateUser,
-    ValidateEmail
+    SignUp,
+    ValidateEmail,
+    SignIn
 }

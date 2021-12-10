@@ -20,7 +20,9 @@ const userSchema= mongoose.Schema(
         password:{
             type:String,
             required:true,
-            default: 'null'
+            minLength:6,
+            maxLength:100,
+            default: 'nullispassword'
         },
         photo:{
             type:String,
