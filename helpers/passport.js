@@ -1,6 +1,7 @@
 import passport from "passport";
 import GoogleStrategy from 'passport-google-oauth20';
 import GithubStrategy from 'passport-github2';
+import LocalStrategy from 'passport-local';
 import dotenv from 'dotenv';
 
 import User from '../models/User.js';
@@ -81,3 +82,16 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  new LocalStrategy(
+
+    function(username,password,confirm_password,email){
+        
+      console.log(username);
+      console.log(password);
+      console.log(confirm_password);
+      console.log(email);
+    }
+  )
+)

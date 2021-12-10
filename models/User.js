@@ -10,19 +10,26 @@ const userSchema= mongoose.Schema(
             maxLength:30,
             required: true
         },
-        googleEmail:{
+        email:{
             type:String,
             required: true,
             unique:true,
+            minLength: 6,
+            maxLength:265
         },
-        googleID:{
+        password:{
             type:String,
             required:true,
-            unique:true
+            default: 'null'
         },
         photo:{
             type:String,
-            required:true
+            required:true,
+            default:'http://res.cloudinary.com/dtdjhqe3m/image/upload/v1639130909/sfms35llfyh4st0x21ag.png'
+        },
+        verified:{
+            type: Boolean,
+            default: false,
         },
         admin:{
             type: Boolean,
@@ -31,6 +38,13 @@ const userSchema= mongoose.Schema(
         adminThrough:{
             type: mongoose.Types.ObjectId,
             ref:'user'
+        },
+        savedBlog:{
+            type: [{type:mongoose.Types.ObjectId,ref:'blog'}],
+        
+        },
+        createBlog:{
+            type: [{type:mongoose.Types.ObjectId,ref:'blog'}]
         }
     },
     {timestamps:true}
