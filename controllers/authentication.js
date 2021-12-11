@@ -181,15 +181,30 @@ const SignIn=async(req,res,next)=>{
     
     const {email,password}=req.body;
     
+   
     try {
 
         Validate_Credentials_of_signin(email,password);
 
-        currrent_user= await User.findOne({email});
+        const currrent_user= await User.findOne({email});
 
         if( currrent_user ){
+
               
-            if( currrent_user.verified ===true ) next();
+            if( currrent_user.verified ===true ) {
+
+                   
+                const isSamePassword= await brcypt.compare(password,currrent_user.password);
+
+                if(isSamePassword===false) {
+                    res.status(202).json({message:'The email or password is wrong'});
+                    return;
+                }
+                else
+                   next();
+
+            }
+
             else{
                
                await sendEmail_To_Validate_Email(currrent_user);
@@ -202,7 +217,7 @@ const SignIn=async(req,res,next)=>{
         
     } catch (error) {
         console.log(error);
-        res.status(400).send({message:error});
+        res.status(400).json({message:error});
     }
 
 }

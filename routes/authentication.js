@@ -56,10 +56,13 @@ router.get( '/github/callback', passport.authenticate('github',{
 router.post('/create-user',SignUp);
 
 // auth with Local
-router.post('/local', SignIn, passport.authenticate('local',{
-    successRedirect:CLIENT_URL,
-    failureRedirect:'/failed'
-}));
+router.post('/local', 
+  SignIn,  
+  passport.authenticate('local', { failureRedirect: '/login' }), 
+  function(req, res) {
+    res.json({message:'successful login'});
+  }
+);
 
 // validate email
 

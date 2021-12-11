@@ -9,21 +9,6 @@ import User from '../models/User.js';
 dotenv.config();
 
 
-// we are sending cookie to browser
-passport.serializeUser((user,done)=>{
-  
-  //  we are sending user._id as a cookie to browser 
-  
-  // null means no error
-  done(null,{id:user._id});
-})
-
-// we are getting the cookie from browser
-passport.deserializeUser((user,done)=>{
-  
-  // null means no error
-  done(null,user);
-})
 
 
 
@@ -38,7 +23,7 @@ passport.use(
         // passport callback function
         // Here google will give us the information about the user
         try {
-          const currentUser=await User.findOne({googleID:profile.id});
+          const currentUser=await User.findOne({email:profile._json.email});
           
           // check if user already exist in our own db 
           if( currentUser ){
@@ -51,9 +36,9 @@ passport.use(
              
               const newUser= new User({
                 username: profile.displayName,
-                googleEmail: profile._json.email,
-                googleID: profile.id,
+                email: profile._json.email,
                 photo:profile._json.picture,
+                verified:profile._json.email_verified
               });
 
               await newUser.save();
@@ -74,10 +59,11 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret:process.env.GITHUB_CLIENT_SECRET,
+      scope: ['user:email'],
       callbackURL: 'http://localhost:3000/auth/github/callback'
     },
     function (accessToken, refreshToken, profile, done) {
-      //console.log(profile);
+      console.log(profile);
       done(null, profile);
     }
   )
@@ -85,13 +71,37 @@ passport.use(
 
 passport.use(
   new LocalStrategy(
+    {
+      usernameField:'email'
+    },
 
-    function(username,password,confirm_password,email){
+   async function(email,password,done){
+           
+      try {
         
-      console.log(username);
-      console.log(password);
-      console.log(confirm_password);
-      console.log(email);
+        const user= await User.findOne({email});
+    
+        return done(null,user);
+
+      } catch (error) {
+        return done(error,false);
+      }
     }
   )
-)
+);
+
+
+// we are sending cookie to browser
+passport.serializeUser((user,done)=>{
+  
+  //  we are sending user._id as a cookie to browser 
+  // null means no error
+  done(null,{id:user._id});
+})
+
+// we are getting the cookie from browser
+passport.deserializeUser((user,done)=>{
+  
+  // null means no error
+  done(null,user);
+})

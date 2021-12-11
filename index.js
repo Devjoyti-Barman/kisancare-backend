@@ -40,7 +40,6 @@ app.use("/home",isLogin,(req,res)=>{
   res.send(`welcome ${req.user.username}`)} 
 );
   
-app.use("/",(req,res)=>res.send("<a href=auth/google>Sign in </a> "));
 
 
 connectDB();
