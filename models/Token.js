@@ -7,6 +7,10 @@ const TokenSchema= mongoose.Schema(
             type: mongoose.Types.ObjectId,
             required: true
         },
+        type:{
+            type:String,
+            required:true
+        },
         createdAt:{type:Date,expires:'3m',default:Date.now}
     }
 )

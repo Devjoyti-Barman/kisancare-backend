@@ -51,7 +51,8 @@ const sendEmail_To_Validate_Email=async (user)=>{
             if( user.verified===true ) return reject({status:400,error:'The user is already verified'});
 
             const newUserToken=new Token({
-                userID:user._id
+                userID:user._id,
+                type:'validate user'
             });
               
             await newUserToken.save();
@@ -185,9 +186,9 @@ const ValidateEmail=async(req,res)=>{
     try {
         
         const getToken=await Token.findById(tokenID);
-        
+        const type='validate user';
         // if token exist
-        if( getToken ){
+        if( getToken && getToken.type===type){
             
             const newUser=await User.findById(getToken.userID);
 
@@ -200,13 +201,13 @@ const ValidateEmail=async(req,res)=>{
             } 
             
             else
-                return res.status(400).json({message:'The user does not exist'});
+                return res.status(200).json({message:'The user does not exist'});
             
 
         }
 
         else
-            return res.status(404).json({message:'The session has expired'});
+            return res.status(200).json({message:'The session has expired'});
         
     } catch (error) {
         console.log(error);
@@ -262,7 +263,7 @@ const SignIn=async(req,res,next)=>{
 const ForgotPassword=async(req,res)=>{
       
     const {tokenID,password,confirm_password}=req.body;
-    
+    const type='change password';
         
 
     try {
@@ -275,7 +276,17 @@ const ForgotPassword=async(req,res)=>{
         else if( password != confirm_password ) return res.status(200).json({msg:'The password and confirm password is different'});
 
         const token=await Token.findById(tokenID);
+
+        // token is does not exist
+        if( !token ) return res.status(200).json({msg:'The token is invalid'});
+        
+        // if the token type is not same 
+        if( token.type != type ) return res.status(200).json({msg:'The token is invalid'});
+
+
         const user=await User.findById(token.userID);
+        
+       
 
         const salt =await brcypt.genSalt(10);
         const hashPassword=await brcypt.hash(password,salt);
@@ -287,7 +298,7 @@ const ForgotPassword=async(req,res)=>{
         return res.status(202).json({msg: 'The password changed successfully.'});
 
     } catch (error) {
-        
+        console.log(error);
     }
 }
 
@@ -316,7 +327,7 @@ const Generate_forgot_password_token=async(req,res)=>{
             } 
             else {
 
-                const userToken=new Token({userID:user._id});
+                const userToken=new Token({userID:user._id,type:'change password'});
                 await userToken.save();
                 
                 // sending mail
