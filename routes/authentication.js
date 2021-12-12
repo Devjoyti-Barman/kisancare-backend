@@ -41,14 +41,6 @@ router.get('/google/callback',passport.authenticate('google',{
    
 }));
 
-// auth with github
-router.get('/github', passport.authenticate('github',{scope:['profile','email']}) );
-
-// callback route for github and serialize will happen
-router.get( '/github/callback', passport.authenticate('github',{
-        successRedirect:CLIENT_URL,
-        failureRedirect:'/failed'
-}));
 
 
 // local auth.  Creating new user locally

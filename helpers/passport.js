@@ -1,6 +1,5 @@
 import passport from "passport";
 import GoogleStrategy from 'passport-google-oauth20';
-import GithubStrategy from 'passport-github2';
 import LocalStrategy from 'passport-local';
 import dotenv from 'dotenv';
 
@@ -54,20 +53,6 @@ passport.use(
     })
 )
 
-passport.use(
-  new GithubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret:process.env.GITHUB_CLIENT_SECRET,
-      scope: ['user:email'],
-      callbackURL: 'http://localhost:3000/auth/github/callback'
-    },
-    function (accessToken, refreshToken, profile, done) {
-      console.log(profile);
-      done(null, profile);
-    }
-  )
-);
 
 passport.use(
   new LocalStrategy(
