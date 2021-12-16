@@ -202,22 +202,22 @@ const ValidateEmail=async(req,res)=>{
 
                 newUser.verified=true;
                 await newUser.save();
-                return res.status(202).json({message:'the user is verified'});
+                return res.status(202).json({msg:'the user is verified'});
 
             } 
             
             else
-                return res.status(200).json({message:'The user does not exist'});
+                return res.status(200).json({msg:'The user does not exist'});
             
 
         }
 
         else
-            return res.status(200).json({message:'The session has expired'});
+            return res.status(200).json({msg:'The session has expired'});
         
     } catch (error) {
         console.log(error);
-        res.status(404).json({message:'Something went wrong. Please try again'});
+        res.status(404).json(error);
     }
 }
 
