@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import isLogin from '../middlewares/isLogin.js';
-import { ForgotPassword, Generate_forgot_password_token, SignIn, SignUp, ValidateEmail } from '../controllers/authentication.js';
+import { ChangePassword, Generate_forgot_password_token, SignIn, SignUp, ValidateEmail } from '../controllers/authentication.js';
 
 const router=express.Router();
 
@@ -52,7 +52,7 @@ router.post('/local',
   SignIn,  
   passport.authenticate('local', { failureRedirect: '/login' }), 
   function(req, res) {
-    res.json({message:'successful login'});
+    res.status(202).json({msg:'successful login'});
   }
 );
 
@@ -61,7 +61,7 @@ router.post('/local',
 router.get('/validate/email/:tokenID',ValidateEmail);
 
 // change password
-router.put('/forgot-password',ForgotPassword);
+router.put('/change-password',ChangePassword);
 
 // generate forgot password token
 router.post('/generate-forgot-password-token',Generate_forgot_password_token);

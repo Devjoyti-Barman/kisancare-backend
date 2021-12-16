@@ -38,7 +38,7 @@ const Validate_Credentials_of_signin=(email,password)=>{
     if( email===undefined ) throw 'email is undefined';
     else if( EmailValidator.validate(email) ===false ) throw 'email is not valid';
     else if( password===undefined ) throw 'password is undefined';
-    else if( password.length <6 ) throw 'password length must be greate than 5';
+    else if( password.length <6 ) throw 'password length must be greater than 5';
 }
 
 const sendEmail_To_Validate_Email=async (user)=>{
@@ -235,7 +235,7 @@ const SignIn=async(req,res,next)=>{
                 const isSamePassword= await brcypt.compare(password,currrent_user.password);
 
                 if(isSamePassword===false) {
-                    res.status(202).json({message:'The email or password is wrong'});
+                    res.status(200).json({msg:'The email or password is wrong'});
                     return;
                 }
                 else
@@ -246,12 +246,12 @@ const SignIn=async(req,res,next)=>{
             else{
                
                await sendEmail_To_Validate_Email(currrent_user);
-               res.status(202).json({message:'email is not verified.\n Check your email to verify the user.'});
+               res.status(200).json({msg:'email is not verified.\n Check your email to verify the user.'});
             }
         }
         
         else
-           throw 'user does not exist';
+           res.status(200).json({msg:'user does not exist.'});
         
     } catch (error) {
         console.log(error);
@@ -260,7 +260,7 @@ const SignIn=async(req,res,next)=>{
 
 }
 
-const ForgotPassword=async(req,res)=>{
+const ChangePassword=async(req,res)=>{
       
     const {tokenID,password,confirm_password}=req.body;
     const type='change password';
@@ -357,6 +357,6 @@ export {
     SignUp,
     ValidateEmail,
     SignIn,
-    ForgotPassword,
+    ChangePassword,
     Generate_forgot_password_token
 }
