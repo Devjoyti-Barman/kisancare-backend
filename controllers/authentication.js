@@ -21,14 +21,16 @@ const transporter = nodemailer.createTransport({
 
 const Validate_Credentials_of_signup=(username,email,password,confirm_password)=>{
     
-    if( username===undefined )  throw 'username is undefined';
-    else if( username.length <5 ) throw 'username must be greater than 4';
-    else if( email===undefined ) throw 'email is undefined';
-    else if( EmailValidator.validate(email) ===false ) throw 'email is not valid';
-    else if( password===undefined ) throw 'password is undefined';
-    else if( password.length <6 ) throw 'password length must be greate than 5';
-    else if( confirm_password===undefined ) throw 'confirm-password is undefined';
-    else if( password != confirm_password) throw 'password and confirm-password is not same';
+    if( username===undefined )  return 'username is undefined';
+    else if( username.length <5 ) return 'username must be greater than 4';
+    else if( email===undefined ) return 'email is undefined';
+    else if( EmailValidator.validate(email) ===false ) return 'email is not valid';
+    else if( password===undefined ) return 'password is undefined';
+    else if( password.length <6 ) return 'password length must be greate than 5';
+    else if( confirm_password===undefined ) return 'confirm-password is undefined';
+    else if( password != confirm_password) return 'password and confirm-password is not same';
+    else
+       return '';
     
 }
 
@@ -139,14 +141,18 @@ const SignUp=async(req,res)=>{
 
         // validating the Credentials of Singnup
 
-        Validate_Credentials_of_signup(username,email,password,confirm_password);
+        const error =Validate_Credentials_of_signup(username,email,password,confirm_password);
+
+        if( error )
+            return res.status(200).json({msg:error});
+        
         
         const Existeduser =await User.findOne({email:email});
 
         if( Existeduser ){
 
-            return res.status(400).json({
-                message:'the user is already exist'
+            return res.status(200).json({
+                msg:'the user is already exist'
             });
         }
 
@@ -165,7 +171,7 @@ const SignUp=async(req,res)=>{
 
             await sendEmail_To_Validate_Email(newUser);
             
-            res.status(202).json({message:'user created successfully.\n Check email for email validation.'});
+            res.status(202).json({msg:'user created successfully.\n Check email for email validation.'});
             
         }
 
