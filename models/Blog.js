@@ -30,6 +30,9 @@ const BlogSchema= mongoose.Schema(
             minLength:6,
             required:true
         },
+        tags:{
+            type:[String]
+        }
 
 
     },

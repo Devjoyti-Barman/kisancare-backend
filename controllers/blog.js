@@ -8,7 +8,8 @@ async function createBlog(req,res,next){
             frontImage:req.body.frontImage,
             body:req.body.body,
             author:req.user.username,
-            createdBy:req.user.id
+            createdBy:req.user.id,
+            tags:req.body.tags
         });
         await newBlog.save();
 
