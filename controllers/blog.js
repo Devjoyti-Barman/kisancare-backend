@@ -55,8 +55,28 @@ async function showBlog(req,res,next){
     }
 }
 
+async function getBlog(req,res,next){
+
+    try {
+        
+        const pageNO = Math.max( req.params.pageNO,1 );
+        const offSet=9;
+        const Skip=(pageNO-1)*offSet;
+
+        const data=await Blog.find({}).skip(Skip).limit(offSet);
+        
+        res.status(201).json({
+            data:data
+        });
+
+
+    } catch (error) {
+        res.status(400).json({error:error,msg:'Something went wrong'});
+    }
+}
 
 export{
     createBlog,
-    showBlog
+    showBlog,
+    getBlog
 }
