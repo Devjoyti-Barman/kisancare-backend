@@ -75,8 +75,36 @@ async function getBlog(req,res,next){
     }
 }
 
+async function searchBlog(req,res,next){
+    
+    try {
+
+        const pageNO = req.query.pageNO===undefined ? 1 : req.query.pageNO;
+        const offSet=9;
+        const Skip=(pageNO-1)*offSet;
+        
+        const q=req.query.q;
+
+        if( q===undefined || q.trim() ===''){
+            
+            const data=await Blog.find({}).skip(Skip).limit(offSet);
+            res.status(201).json({data});
+        
+        }else{
+            const query= q.split(' ');
+            const data=await Blog.find().where('tags').in(query).skip(Skip).limit(offSet);
+            res.status(201).json({data});
+        }
+
+
+    } catch (error) {
+        res.status(400).json(error);
+    }
+}
+
 export{
     createBlog,
     showBlog,
-    getBlog
+    getBlog,
+    searchBlog
 }
