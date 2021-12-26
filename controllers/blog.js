@@ -1,4 +1,5 @@
 import  Blog from '../models/Blog.js';
+import User from '../models/User.js';
 
 async function createBlog(req,res,next){
     
@@ -102,9 +103,29 @@ async function searchBlog(req,res,next){
     }
 }
 
+async function saveBlog(req,res,next){
+    
+    try {
+        
+        const user=await User.findById(req.user.id);
+        
+        user.savedBlog.push(req.body.blogID);
+        
+        user.save()
+        .then(()=>{
+            res.status(202).json({msg:'blog saved successfully'});
+        })
+        .catch((error)=>res.status(200).json({msg:'the blog is saved already'}));
+        
+    } catch (error) {
+        res.status(400).json({error:error,msg:'something went wrong'});
+    }
+}
+
 export{
     createBlog,
     showBlog,
     getBlog,
-    searchBlog
+    searchBlog,
+    saveBlog
 }

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import uniqueArrayPlugin  from 'mongoose-unique-array';
 
 const Schema=mongoose.Schema;
 
@@ -42,7 +43,7 @@ const userSchema= mongoose.Schema(
             ref:'user'
         },
         savedBlog:{
-            type: [{type:mongoose.Types.ObjectId,ref:'blog'}],
+            type: [{type:mongoose.Types.ObjectId,ref:'blog',unique:true}],
         
         },
         createBlog:{
@@ -51,6 +52,8 @@ const userSchema= mongoose.Schema(
     },
     {timestamps:true}
 );
+
+userSchema.plugin(uniqueArrayPlugin);
 
 const User = mongoose.model('user',userSchema);
 
