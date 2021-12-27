@@ -90,12 +90,17 @@ async function searchBlog(req,res,next){
         if( q===undefined || q.trim() ===''){
             
             const data=await Blog.find({}).skip(Skip).limit(offSet);
-            res.status(201).json({data});
+            const totalDocuments=await Blog.find().count();
+            const totalPages=Math.max(1, Math.ceil( totalDocuments/offSet) );
+            res.status(201).json({data,totalPages:totalPages});
         
         }else{
             const query= q.split(' ');
             const data=await Blog.find().where('tags').in(query).skip(Skip).limit(offSet);
-            res.status(201).json({data});
+            const totalDocuments=await Blog.find().where('tags').in(query).count();
+            console.log(totalDocuments);
+            const totalPages=Math.max(1, Math.ceil( totalDocuments/offSet) );
+            res.status(201).json({data,totalPages:totalPages});
         }
 
 
