@@ -1,5 +1,6 @@
 import  Blog from '../models/Blog.js';
 import User from '../models/User.js';
+import mongoose from 'mongoose';
 
 async function createBlog(req,res,next){
     
@@ -134,11 +135,54 @@ async function getSaveBlog(req,res,next){
     }
 }
 
+async function isBlogSave(req,res,next){
+
+    try {
+        
+        const user=await User.findById(req.user.id);
+        const blogID= req.body.blogID ;
+        const savedBlog=user.savedBlog;
+        let isSave=false;
+        
+        savedBlog.forEach(blog=>{
+            if( blog.toString()===blogID ){
+                isSave=true;
+            }      
+        });
+
+        return res.status(202).json({isSave:isSave});
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json(error);
+    }
+}
+
+async function unSaveBlog(req,res,next){
+    
+
+    try {
+       
+        const user =await User.findById(req.user.id);
+        const {blogID}=req.body;
+
+        await user.savedBlog.pull({_id:blogID});
+        await user.save();
+
+        res.status(202).json({msg:'unsaved blog successfully'});
+     
+    } catch (error) {
+        res.status(400).json({error:error,msg:'something went wrong'});
+    }
+}
+
 export{
     createBlog,
     showBlog,
     getBlog,
     searchBlog,
     saveBlog,
-    getSaveBlog
+    getSaveBlog,
+    isBlogSave,
+    unSaveBlog
 }
