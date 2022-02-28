@@ -28,7 +28,7 @@ router.get('/success',isLogin, (req,res)=>{
 
 router.get('/logout',(req,res)=>{
     req.logout();
-    res.redirect(CLIENT_URL);
+    res.status(200).json({msg:'successfully logout'});
 })
 
 // auth with google
